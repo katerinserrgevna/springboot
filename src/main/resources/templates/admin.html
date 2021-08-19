@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+</head>
+<body>
+<div th:each="user : ${users}">
+    <form th:method="DELETE" th:action="@{/admin/delete/{id}(id=${user.getId()})}">
+        <a th:text = "${user.getName()}"></a>
+        <a th:text = "${user.getLastName()}"></a>
+        <a th:text = "${user.getEmail()}"></a>
+        <a th:text = "${user.getUserName()}"></a>
+        <a th:text = "${user.getPassword()}"></a>
+        <a th:href="@{/admin/edit/{id}(id=${user.getId()})}">Edit</a>
+        <input type="submit" value="Delete">
+    </form>
+</div>
+
+<a th:href="@{/admin/new}">Create user</a>
+
+<hr>
+<form name="logoutForm" th:action="@{/logout}" method="GET">
+    <input type="submit" value="Sign Out"/>
+</form>
+</body>
+</html>
