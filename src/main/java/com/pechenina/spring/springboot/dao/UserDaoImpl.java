@@ -18,7 +18,7 @@ public class UserDaoImpl implements UserDao{
         return entityManager
                 .createQuery("SELECT u FROM User u WHERE u.id = :id", User.class)
                 .setParameter("id", id)
-                .getResultList().stream().findAny().orElse(null);
+                .getSingleResult();
     }
 
     @Override
@@ -26,7 +26,7 @@ public class UserDaoImpl implements UserDao{
         return entityManager
                 .createQuery("SELECT u FROM User u WHERE u.userName = :userName", User.class)
                 .setParameter("userName", userName)
-                .getResultList().stream().findAny().orElse(null);
+                .getSingleResult();
     }
 
     @Override

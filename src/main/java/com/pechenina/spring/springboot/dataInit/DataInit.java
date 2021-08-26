@@ -31,6 +31,6 @@ public class DataInit {
         roles.add(roleService.getRoleByName("USER"));
         userService.saveUser(new User("user", "1", roles));
         roles.add(roleService.getRoleByName("ADMIN"));
-        userService.saveUser(new User("admin", "2", roles));
+        userService.saveUser(new User("1", "1", roles));
     }
 }

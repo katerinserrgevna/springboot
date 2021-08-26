@@ -1,6 +1,7 @@
 package com.pechenina.spring.springboot.controller;
 
 import com.pechenina.spring.springboot.model.Role;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -8,8 +9,7 @@ import com.pechenina.spring.springboot.model.User;
 import com.pechenina.spring.springboot.service.RoleService;
 import com.pechenina.spring.springboot.service.UserService;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequestMapping("/admin")
@@ -58,20 +58,26 @@ public class AdminController {
     @GetMapping("/new")
     public String newUser(Model model) {
         model.addAttribute(new User());
+        Map<Role, Boolean> roles = new TreeMap((Comparator<Role>) this::sortingRole);
+        roleService.getRoles().forEach(r -> roles.put(r, false));
+        model.addAttribute("roles", roles);
         return "newUser";
     }
 
     @PostMapping()
     public String createUser(@ModelAttribute("user") User user,
-                             @RequestParam(required = false) String userRoles) {
+                             @RequestParam(value = "roles", required = false) Integer[] userRoles) {
         Set<Role> roles = new HashSet<>();
         roles.add(roleService.getRoleByName("USER"));
-        if (userRoles != null && userRoles.equals(
-                roleService.getRoleByName("ADMIN").getRoleName())) {
-            roles.add(roleService.getRoleByName("ADMIN"));
+        if (userRoles != null) {
+            Arrays.stream(userRoles).forEach(id -> roles.add(roleService.getRoleById(id)));
         }
         user.setRoles(roles);
         userService.saveUser(user);
         return "redirect:/admin";
+    }
+
+    private int sortingRole (Role r1, Role r2) {
+        return (int) (r1.getId() - r2.getId());
     }
 }
