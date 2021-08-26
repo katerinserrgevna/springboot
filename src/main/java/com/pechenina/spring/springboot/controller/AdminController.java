@@ -26,6 +26,7 @@ public class AdminController {
     @GetMapping()
     public String adminPage(Model model) {
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("roles", roleService.getRoles());
         return "admin";
     }
 
@@ -42,14 +43,14 @@ public class AdminController {
     }
 
     @PutMapping("/edit/{id}")
-    public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") int id,
-                             @RequestParam(required = false) String userRoles) {
+    public String updateUser(@ModelAttribute("user") User user,
+                             @RequestParam(value = "roles", required = false) Integer[] userRoles) {
         Set<Role> roles = new HashSet<>();
         roles.add(roleService.getRoleByName("USER"));
-        if (userRoles != null && userRoles.equals(
-                roleService.getRoleByName("ADMIN").getRoleName())) {
-            roles.add(roleService.getRoleByName("ADMIN"));
+        if (userRoles != null) {
+            Arrays.stream(userRoles).forEach(id -> roles.add(roleService.getRoleById(id)));
         }
+        System.out.println(userRoles.length);
         user.setRoles(roles);
         userService.update(user);
         return "redirect:/admin";

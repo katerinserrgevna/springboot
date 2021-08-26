@@ -13,11 +13,13 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService{
 
-    //если делать через конструктор, все падает....
-    @Autowired
-    private UserDao userDao;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
     @Override

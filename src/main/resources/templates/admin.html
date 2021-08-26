@@ -62,18 +62,61 @@
                     <td th:text="${user.getUserName()}"></td>
                     <td th:text="${user.getRoles()}"></td>
                     <td style="width: 180px">
-                        <button class="btn btn-info" data-bs-toggle="modal"
-                                th:data-bs-target="|#editUser${user.getId()}|" th:text="Edit" >
+                        <button type="button" class="btn btn-info btn-sm text-white"  data-toggle="modal"
+                                th:data-target="|#edit${user.getId()}|">Edit
                         </button>
-                        <button class="btn btn-danger" data-bs-toggle="modal"
-                                th:data-bs-target="|#delUser${user.getId()}|">
-                                Delete
-                        </button>
-                        <div class="modal fade" th:id="|delUser${user.getId()}|" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                        <div class="modal fade" th:id="|edit${user.getId()}|" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                              aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <form class="container form-horizontal" th:method="POST" th:action="@{/admin/delete/{id}(id=${user.getId()})}" th:object="${user}">
+                                    <form class="container form-horizontal" th:method="PUT" th:action="@{admin/edit/{id}(id=${user.getId()})}" th:object="${user}">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit user</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div align="center">
+                                                <div class="col-sm fw-bold" style="max-width: 350px;">
+                                                    ID
+                                                    <input th:value="*{id}" name="id" type="text" readonly class="form-control"/>
+                                                    First name
+                                                    <input th:value="*{name}" name="name" type="text" class="form-control" placeholder="First name"/>
+                                                    Last name
+                                                    <input th:value="*{lastName}" name="lastName" type="text" class="form-control" placeholder="Last name"/>
+                                                    Email
+                                                    <input th:value="*{email}" name="email" type="email" class="form-control" placeholder="Email"/>
+                                                    Username
+                                                    <input th:value="*{userName}" name="userName" type="text" class="form-control" placeholder="username"/>
+                                                    Password
+                                                    <input th:value="*{password}" name="password" type="password" class="form-control" placeholder="Password"/>
+                                                    Roles
+                                                    <select class="form-control w-100 px-2 py-1" style="height: 52px;" multiple name="roles">
+                                                        <option th:each="role : ${roles}" th:value="${role.getId()}"
+                                                                th:selected="${user.getRoles().contains(role)}"
+                                                                th:text=" ${#strings.replace(role.getRoleName(),'ROLE_','')}">
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-info">Edit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                th:data-target="|#deleteUser${user.getId()}|">Delete
+                        </button>
+                        <div class="modal fade" th:id="|deleteUser${user.getId()}|"
+                             data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form class="container form-horizontal" th:method="DELETE" th:action="@{/admin/delete/{id}(id=${user.getId()})}" th:object="${user}">
                                         <div class="modal-header">
                                             <h5 class="modal-title">Delete user</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -102,8 +145,8 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-danger" name="action-btn">Delete</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-danger">Delete</button>
                                         </div>
                                     </form>
                                 </div>
