@@ -10,8 +10,12 @@ import java.util.List;
 
 @Service
 public class RoleServiceImpl implements RoleService{
-    @Autowired
+    final
     RoleDao roledao;
+
+    public RoleServiceImpl(RoleDao roledao) {
+        this.roledao = roledao;
+    }
 
     @Override
     @Transactional
@@ -21,18 +25,18 @@ public class RoleServiceImpl implements RoleService{
 
     @Override
     public Role getRoleById(int id) {
-        return roledao.getRoleById(id);
+        return roledao.getById(id);
     }
 
     @Override
     @Transactional
     public void saveRole(Role role) {
-        roledao.saveRole(role);
+        roledao.save(role);
     }
 
     @Override
     @Transactional
     public List<Role> getRoles() {
-        return roledao.getRoles();
+        return roledao.findAll();
     }
 }

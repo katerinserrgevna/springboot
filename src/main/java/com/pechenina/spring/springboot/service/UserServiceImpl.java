@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+        return userDao.findAll();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDao.saveUser(user);
+        userDao.save(user);
     }
 
     @Override
@@ -48,11 +48,11 @@ public class UserServiceImpl implements UserService{
         if(!getUserById(user.getId()).getPassword().equals(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        return userDao.update(user);
+        return userDao.saveAndFlush(user);
     }
 
     @Override
     public void delete(int id) {
-        userDao.delete(id);
+        userDao.deleteById(Integer.valueOf(id));
     }
 }

@@ -1,6 +1,9 @@
 package com.pechenina.spring.springboot.controller;
 
 import com.pechenina.spring.springboot.model.Role;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,10 +12,11 @@ import com.pechenina.spring.springboot.model.User;
 import com.pechenina.spring.springboot.service.RoleService;
 import com.pechenina.spring.springboot.service.UserService;
 
+import javax.validation.Valid;
 import java.util.*;
 
-@Controller
-@RequestMapping("/admin")
+@RestController
+@RequestMapping(value = "/rest", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminController {
 
     private final RoleService roleService;
@@ -23,17 +27,24 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-    @GetMapping()
-    public String adminPage(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("roles", roleService.getRoles());
-        return "admin";
+    @GetMapping("/admin")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") int id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable("id") int id) {
         userService.delete(id);
-        return "redirect:/admin";
+    }
+
+    @GetMapping("/admin/delete/{id}")
+    public ResponseEntity<User> getUserInfo(@PathVariable("id") int id) {
+        User user = userService.getUserById(id);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/edit/{id}")
@@ -56,26 +67,18 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/new")
-    public String newUser(Model model) {
-        model.addAttribute(new User());
-        Map<Role, Boolean> roles = new TreeMap((Comparator<Role>) this::sortingRole);
-        roleService.getRoles().forEach(r -> roles.put(r, false));
-        model.addAttribute("roles", roles);
-        return "newUser";
+    @PostMapping()
+    public ResponseEntity<User> create(@RequestBody @Valid User user) {
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        userService.saveUser(user);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @PostMapping()
-    public String createUser(@ModelAttribute("user") User user,
-                             @RequestParam(value = "roles", required = false) Integer[] userRoles) {
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleService.getRoleByName("USER"));
-        if (userRoles != null) {
-            Arrays.stream(userRoles).forEach(id -> roles.add(roleService.getRoleById(id)));
-        }
-        user.setRoles(roles);
-        userService.saveUser(user);
-        return "redirect:/admin";
+    @GetMapping("/admin/roles")
+    public ResponseEntity<List<Role>> getAllRoles() {
+        return new ResponseEntity<>(roleService.getRoles(), HttpStatus.OK);
     }
 
     private int sortingRole (Role r1, Role r2) {
