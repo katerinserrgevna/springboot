@@ -57,7 +57,7 @@ function newRow(user, isButtons) {
 
 function editUser(id) {
     $('#editModal').modal()
-    fillRoles("#edit_roles")
+    fillRoles("#edit_roles").then()
     loadDataToFormData("#row" + id, "#edit")
 }
 
@@ -145,7 +145,7 @@ function clearUserEditForm() {
 function getFormData(form) {
 
     var selectedRoles = [];
-    $(form + ' option:selected').map(function () {
+    $(form + 'option:selected').map(function () {
         selectedRoles.push({
             id: $(this).attr('id'),
             name: $(this).val()
@@ -154,7 +154,7 @@ function getFormData(form) {
 
     var user = {
         id: $(form + ' input[name="id"]').val(),
-        username: $(form + ' input[name="userName"]').val(),
+        userName: $(form + ' input[name="userName"]').val(),
         password: $(form + ' input[name="password"]').val(),
         name: $(form + ' input[name="name"]').val(),
         lastName: $(form + ' input[name="lastName"]').val(),
@@ -168,8 +168,8 @@ function loadDataToFormData(id, action) {
     $(id).each(async function () {
         $(action + '_id').val($(this).find("td:eq(0)").html())
         $(action + '_name').val($(this).find("td:eq(1)").html());
-        $(action + '_last_name').val($(this).find("td:eq(2)").html());
-        $(action + '_user_name').val($(this).find("td:eq(3)").html());
+        $(action + '_lastName').val($(this).find("td:eq(2)").html());
+        $(action + '_userName').val($(this).find("td:eq(3)").html());
         $(action + '_email').val($(this).find("td:eq(4)").html());
 
         var userRole = $(this).find("td:eq(5)").html();

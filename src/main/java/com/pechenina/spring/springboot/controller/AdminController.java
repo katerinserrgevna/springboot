@@ -32,42 +32,24 @@ public class AdminController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") int id) {
+        System.out.println(userService.getUserById(id).toString());
         userService.delete(id);
     }
 
-    @GetMapping("/admin/delete/{id}")
-    public ResponseEntity<User> getUserInfo(@PathVariable("id") int id) {
-        User user = userService.getUserById(id);
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<User> update(@RequestBody User user) {
+        System.out.println(user.toString());
         if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        userService.saveUser(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/edit/{id}")
-    public String editUser(Model model, @PathVariable("id") int id) {
-        model.addAttribute("user", userService.getUserById(id));
-        return "editUser";
-    }
-
-    @PutMapping("/edit/{id}")
-    public String updateUser(@ModelAttribute("user") User user,
-                             @RequestParam(value = "roles", required = false) Integer[] userRoles) {
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleService.getRoleByName("USER"));
-        if (userRoles != null) {
-            Arrays.stream(userRoles).forEach(id -> roles.add(roleService.getRoleById(id)));
-        }
-        System.out.println(userRoles.length);
-        user.setRoles(roles);
-        userService.update(user);
-        return "redirect:/admin";
-    }
-
-    @PostMapping()
+    @PostMapping("/admin")
     public ResponseEntity<User> create(@RequestBody @Valid User user) {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -81,7 +63,4 @@ public class AdminController {
         return new ResponseEntity<>(roleService.getRoles(), HttpStatus.OK);
     }
 
-    private int sortingRole (Role r1, Role r2) {
-        return (int) (r1.getId() - r2.getId());
-    }
 }

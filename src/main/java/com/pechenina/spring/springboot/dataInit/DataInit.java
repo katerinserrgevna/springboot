@@ -29,8 +29,8 @@ public class DataInit {
         roleService.saveRole(new Role("ROLE_ADMIN"));
         Set<Role> roles = new HashSet<>();
         roles.add(roleService.getRoleByName("ROLE_USER"));
-        userService.saveUser(new User("user", "1", roles));
+        userService.saveUser(new User("user", "1", roles, "name", "lastName", "user@user"));
         roles.add(roleService.getRoleByName("ROLE_ADMIN"));
-        userService.saveUser(new User("1", "1", roles));
+        userService.saveUser(new User("1", "1", roles, "name", "lastName", "email@email"));
     }
 }
