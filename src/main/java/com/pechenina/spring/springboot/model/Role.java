@@ -13,15 +13,15 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.AUTO)
     int id;
 
-    @Column(name = "roleName")
-    private String roleName;
+    @Column(name = "name")
+    private String name;
 
-    public String getRoleName() {
-        return roleName;
+    public String getName() {
+        return name;
     }
 
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setName(String roleName) {
+        this.name = roleName;
     }
 
     public int getId() {
@@ -37,7 +37,7 @@ public class Role implements GrantedAuthority {
     }
 
     public Role(String roleName) {
-        this.roleName = roleName;
+        this.name = roleName;
     }
 
     @ManyToMany(mappedBy = "roles")
@@ -45,12 +45,12 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return "ROLE_" + roleName;
+        return name;
     }
 
     @Override
     public String toString() {
-        return this.roleName;
+        return this.name;
     }
 
     @Override

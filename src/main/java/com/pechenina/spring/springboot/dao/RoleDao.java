@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface RoleDao extends JpaRepository<Role, Integer> {
-    @Query("SELECT u FROM Role u WHERE u.roleName = (:roleName)")
+    @Query("SELECT u FROM Role u WHERE u.name = (:roleName)")
     Role getRoleByName(String roleName);
 }

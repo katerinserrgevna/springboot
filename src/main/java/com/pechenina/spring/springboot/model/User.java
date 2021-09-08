@@ -98,7 +98,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     public boolean checkRole(String role) {
-        return this.getRoles().stream().anyMatch(t -> t.getRoleName().contains(role));
+        return this.getRoles().stream().anyMatch(t -> t.getName().contains(role));
     }
 
     @Override
